@@ -1,0 +1,50 @@
+<div class="w3-display-container w3-animate-opacity w3-card-2">
+  <img src="/static/img/main.jpeg" alt="boat" style="width:100%;min-height:350px;max-height:600px;">
+  <div class="w3-container w3-display-bottomleft w3-margin-bottom">
+    <button class="w3-button w3-xlarge w3-theme w3-hover-teal" title="GZT">GZT</button>
+  </div>
+</div>
+<!-- Accordion -->
+      <div class="w3-card w3-round">
+        <div class="w3-white">
+          <button onclick="myFunction('menu1')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i>Reserved</button>
+          <div id="menu1" class="w3-hide w3-container">
+            <p> </p>
+          </div>
+          <button onclick="myFunction('menu2')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i>Reserved</button>
+          <div id="menu2" class="w3-hide w3-container">
+            <p> </p>
+          </div>
+          <button onclick="myFunction('menu3')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i>Reserved</button>
+          <div id="menu3" class="w3-hide w3-container">
+         <div class="w3-row-padding">
+         </div>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <script>
+// Accordion
+function myFunction(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-theme-d1";
+    } else {
+        x.className = x.className.replace("w3-show", "");
+        x.previousElementSibling.className =
+        x.previousElementSibling.className.replace(" w3-theme-d1", "");
+    }
+}
+
+// Used to toggle the menu on smaller screens when clicking on the menu button
+function openNav() {
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+</script>
