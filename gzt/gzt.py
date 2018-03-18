@@ -6,7 +6,6 @@ import sys, json
 import threading
 
 app = Flask(__name__)
-notify = ["0","0"]
 
 @app.route('/')
 def root():
@@ -61,10 +60,6 @@ def refresh():
     ylastnews = len(thelist) -  (len(thelist) - counter)
     if ylastnews > 0:
         Settings().writeSetting('yeniakit','lastId', str(thelist[0][3]))
-
-    #if int(Settings().readSetting('yeniakit','lastId')) != int(thelist[0][3]):
-    #    Settings().writeSetting('yeniakit','lastId', str(thelist[0][3]))
-    #    notify[0] = "1"
     thelist = Sozcu().parseNewsList()
     counter = 0
     for i in thelist:
@@ -75,9 +70,6 @@ def refresh():
     slastnews = len(thelist) -  (len(thelist) - counter)
     if slastnews > 0:
         Settings().writeSetting('sozcu','lastId', str(thelist[0][3]))
-    #if int(Settings().readSetting('sozcu','lastId')) != int(thelist[0][3]):
-    #    Settings().writeSetting('sozcu','lastId', str(thelist[0][3]))
-    #    notify[1] = "1"
     return Response(json.dumps({'yeniakit': ylastnews, 'sozcu': slastnews},),mimetype='application/json')
 
 def start_server():
