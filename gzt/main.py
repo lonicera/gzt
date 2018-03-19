@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, jsonify, Response, request
-from parser import YeniAkit, Sozcu, Alert
-from config import Settings
+from gzt.parser import YeniAkit, Sozcu, Alert
+from gzt.config import Settings
 import webview
 import sys, json
 import threading
@@ -75,14 +78,12 @@ def refresh():
 def start_server():
     app.run()
 
-if __name__ == '__main__':
-    """  https://github.com/r0x0r/pywebview/blob/master/examples/http_server.py
-    """
 
-    t = threading.Thread(target=start_server)
-    t.daemon = True
-    t.start()
 
-    webview.create_window("Gazete", "http://127.0.0.1:5000/")
+t = threading.Thread(target=start_server)
+t.daemon = True
+t.start()
 
-    sys.exit()
+webview.create_window("Gazete", "http://127.0.0.1:5000/")
+
+sys.exit()
