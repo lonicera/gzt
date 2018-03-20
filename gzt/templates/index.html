@@ -4,129 +4,146 @@
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/w3.css">
-    <link rel="stylesheet" href="/static/css/w3-theme-blue-grey.css">
-<script src="/static/js/jquery-1.10.2.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
-<style>
- body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
-.w3-quarter img{margin-bottom: -6px; cursor: pointer}
-.w3-quarter img:hover{opacity: 0.6; transition: 0.3s}
-
-</style>
-<script>
-var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-var yakit;
-var sozcu;
-function checkNews () {
-  $.ajax({
-      type: "GET",
-      dataType: "json",
-      url: "/refresh",
-      data: {},
-      beforeSend: function() {
-        $('#id01').css("display", "block");
-      },
-      success: function(data) {
-        yakit = data.yeniakit;
-        sozcu = data.sozcu;
-        if (data.sozcu > 0) {
-          $('#sozcu').html("Sözcü <span class='w3-badge w3-red w3-tiny'>" + data.sozcu + "&nbsp;</span>");
-        }
-        if (data.yeniakit > 0) {
-          $('#yeniakit').html("Yeni Akit <span class='w3-badge w3-red w3-tiny'>" + data.yeniakit + "&nbsp;</span>");
-        }
-        $('#id01').css("display", "none");
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-        //alert(xhr.status);
-        //alert(thrownError);
-      }
-  });
-}
-$(document).ready(function(){
-   $('#loader').load("/main");
-  checkNews();
-  setInterval(function(){ checkNews(); }, {{update_interval}});
-
-  $('.w3-bar-item').click(function(){
-    if ($(this).attr('id') == "main") {
-      $('#loader').removeClass('w3-container');
-      $('#loader').css("margin-top", "0px");
-      $('#id01').css("display", "block");
-       $('#loader').load("/main", function() {
-    $('#id01').css("display", "none");
-  });
-    }
-    if ($(this).attr('id') == "toggle") {
+  <link rel="stylesheet" href="/static/css/w3.css">
+  <link rel="stylesheet" href="/static/css/w3-theme-blue-grey.css">
+  <script src="/static/js/jquery-1.10.2.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
+  <style>
+    body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+  </style>
+  <script>
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    var default_view = "{{ default_view }}";
+    var yakit;
+    var sozcu;
+    function checkNews () {
       $.ajax({
-          type: "GET",
-          dataType: "json",
-          url: "/toggle",
-          data: {},
-          beforeSend: function() {
-          },
-          success: function(data) {
-          },
-          error: function (xhr, ajaxOptions, thrownError) {
+        type: "GET",
+        dataType: "json",
+        url: "/refresh",
+        data: {},
+        beforeSend: function() {
+          $('#sozcu').html("Sözcü");
+          $('#yeniakit').html("Yeni Akit");
+          $('#id01').css("display", "block");
+        },
+        success: function(data) {
+          yakit = data.yeniakit;
+          sozcu = data.sozcu;
+          if (data.sozcu > 0) {
+            $('#sozcu').html("Sözcü <span class='w3-badge w3-red w3-tiny'>" + data.sozcu + "&nbsp;</span>");
           }
+          if (data.yeniakit > 0) {
+            $('#yeniakit').html("Yeni Akit <span class='w3-badge w3-red w3-tiny'>" + data.yeniakit + "&nbsp;</span>");
+          }
+          $('#id01').css("display", "none");
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          //alert(xhr.status);
+          //alert(thrownError);
+        }
       });
     }
-    if ($(this).attr('id') == "sozcu") {
-
-      $('#id01').css("display", "block");
-       $('#loader').load("/content?gazete=Sözcü", function() {
-         $('#loader').addClass('w3-container');
-         $('#loader').css("margin-top", "50px");
-    $('#id01').css("display", "none");
-  });
-      if (sozcu > 0) {
-        $('#sozcu').html("Sözcü");
+    $(document).ready(function(){
+      var newspaper = "";
+      if (default_view == "grid") {
+        $('#default_view').removeClass("fa-th");
+        $('#default_view').addClass("fa-bars");
+      } else {
+        $('#default_view').removeClass("fa-bars");
+        $('#default_view').addClass("fa-th");
       }
-    }
-    if ($(this).attr('id') == "yeniakit") {
-      $('#id01').css("display", "block");
-       $('#loader').load("/content?gazete=akit", function() {
-         $('#loader').addClass('w3-container');
-         $('#loader').css("margin-top", "50px");
-    $('#id01').css("display", "none");
-});
-      if (yakit > 0) {
-        $('#yeniakit').html("Yeni Akit");
-      }
-    }
-  });
-});
-
-</script>
-
-
+      $('#loader').load("/main");
+      checkNews();
+      setInterval(function(){ checkNews(); }, {{update_interval}});
+      $('.w3-bar-item').click(function(){
+        if ($(this).attr('id') == "main") {
+          $('#loader').removeClass('w3-container');
+          $('#loader').css("margin-top", "0px");
+          $('#id01').css("display", "block");
+          $('#loader').load("/main", function() {
+            $('#id01').css("display", "none");
+          });
+        }
+        if ($(this).attr('id') == "toggle") {
+          $( this).toggleClass( "w3-red" );
+          $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/toggle",
+            data: {},
+            beforeSend: function() {
+            },
+            success: function(data) {
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+          });
+        }
+        if ($(this).attr('id') == "view") {
+          $( this).toggleClass( "w3-red" );
+          if (default_view == "list") {
+            default_view = "grid";
+            $('#default_view').removeClass("fa-th");
+            $('#default_view').addClass("fa-bars");
+          } else {
+            default_view = "list";
+            $('#default_view').removeClass("fa-bars");
+            $('#default_view').addClass("fa-th");
+          }
+          $('#id01').css("display", "block");
+          $('#loader').load("/content?type=" + default_view  + "&gazete="+newspaper, function() {
+            $('#loader').addClass('w3-container');
+            $('#loader').css("margin-top", "50px");
+            $('#id01').css("display", "none");
+          });
+        }
+        if ($(this).attr('id') == "sozcu") {
+          newspaper = "Sözcü";
+          $('.newspaper').removeClass('w3-red');
+          $(this).addClass('w3-red');
+          $('#id01').css("display", "block");
+          $('#loader').load("/content?type=" + default_view + "&gazete=Sözcü", function() {
+            $('#loader').addClass('w3-container');
+            $('#loader').css("margin-top", "50px");
+            $('#id01').css("display", "none");
+          });
+          if (sozcu > 0) {
+            $('#sozcu').html("Sözcü");
+          }
+        }
+        if ($(this).attr('id') == "yeniakit") {
+          newspaper = "akit";
+          $('.newspaper').removeClass('w3-red');
+          $(this).addClass('w3-red');          
+          $('#id01').css("display", "block");
+          $('#loader').load("/content?type=" + default_view + "&gazete=akit", function() {
+            $('#loader').addClass('w3-container');
+            $('#loader').css("margin-top", "50px");
+            $('#id01').css("display", "none");
+          });
+          if (yakit > 0) {
+            $('#yeniakit').html("Yeni Akit");
+          }
+        }
+      });
+    });
+  </script>
 </head>
-<div id="main_menu" class="w3-bar w3-theme-l1 w3-card-2 w3-top">
-  <button id="main" class="w3-bar-item w3-button w3-theme-d4" >Ana Sayfa</button>
-  <button id="sozcu" class="w3-bar-item w3-button">Sözcü</button>
-  <button id="yeniakit" class="w3-bar-item w3-button" >Yeni Akit</button>
-  <button id="toggle" class="w3-bar-item w3-button w3-right" ><i class="fa fa-expand-arrows-alt"></i></button>
-
-
-</div>
-
-
-<div id="id01" class="w3-modal w3-center">
-
-
-<i class="fa fa-spinner w3-spin" style="font-size:64px"></i>
-
-
-</div>
-
-
-<div id="loader" class="w3-animate-opacity">
-
-</div>
-
-
+<body>
+  <div id="main_menu" class="w3-bar w3-theme-l1 w3-card-2 w3-top">
+    <button id="main" class="w3-bar-item w3-button w3-theme-d4" >Ana Sayfa</button>
+    <button id="sozcu" class="w3-bar-item w3-button newspaper">Sözcü</button>
+    <button id="yeniakit" class="w3-bar-item w3-button newspaper" >Yeni Akit</button>
+    <button id="toggle" class="w3-bar-item w3-button w3-right" ><i class="fa fa-expand-arrows-alt"></i></button>
+    <button id="view" class="w3-bar-item w3-button w3-right" ><i id="default_view" class="fa fa-th"></i></button>
+  </div>
+  <div id="id01" class="w3-modal w3-center">
+    <i class="fa fa-spinner w3-spin" style="font-size:64px"></i>
+  </div>
+  <div id="loader" class="w3-animate-opacity">
+  </div>
 </body>
 </html>

@@ -1,0 +1,41 @@
+
+<div id="newslist" class="w3-light-grey">
+  <h5 class="w3-bar-item w3-border-bottom">{{name}} Gazetesi</h5>
+  {% for i in list%}
+  <div class="w3-container w3-third w3-center">
+    <img src="{{i[2]}}" class="w3-border w3-padding w3-card-2" alt="{{i[0]}}" width="97%" onclick="onClick('{{i[1]}}')" >
+  </div>
+  {% endfor %}
+</div>
+<div id="id03" class="w3-modal w3-animate-zoom">
+  <div class="w3-modal-content">
+    <header class="w3-container w3-theme-l3">
+      <span onclick="document.getElementById('id03').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+      <h5 class="htwo" style="width:90%"></h5>
+    </header>
+    <div class="w3-container content w3-medium"></div>
+  </div>
+</div>
+<script>
+  function onClick(evt) {
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      url: "/detail",
+      data: {'gazete': '{{name}}', 'link': evt},
+      beforeSend: function() {
+        $('#id01').css("display", "block");
+      },
+      success: function(data) {
+        document.getElementById('id03').getElementsByClassName('htwo')[0].textContent=data.h2;
+        document.getElementById('id03').getElementsByClassName('content')[0].textContent=data.content;
+        $('#id01').css("display", "none");
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+    document.getElementById("id03").style.display = "block";
+  }
+</script>

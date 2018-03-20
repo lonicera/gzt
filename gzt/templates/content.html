@@ -1,38 +1,33 @@
 
 <div id="newslist" class="w3-sidebar w3-bar-block w3-light-grey w3-card-2" style="width:430px">
   <h5 class="w3-bar-item w3-border-bottom">{{name}} Gazetesi</h5>
-{% for i in list%}
-
+  {% for i in list%}
   <button id="{{i[3]}}" class="w3-bar-item w3-button tablink" onclick="openCity(event, '{{i[1]}}')">{{i[0]}}</button>
-
-{% endfor %}
+  {% endfor %}
 </div>
 
 <div style="margin-left:430px">
-{% for i in list%}
-
-
+  {% for i in list%}
   <div id="{{i[1]}}" class="w3-container news w3-animate-opacity" style="display:none">
     <div class="w3-panel w3-leftbar w3-theme-l4 w3-xxlarge w3-serif w3-padding-8">{{i[0]}}</div>
     <h3 class="htwo"></h3>
     <p class="w3-center"> <img src="{{i[2]}}" class="w3-border w3-padding w3-card-2" alt="{{i[0]}}"> </p>
     <p class="content w3-justify w3-large"></p>
   </div>
-
-{% endfor %}
+  {% endfor %}
 </div>
 <script>
-function openCity(evt, cityName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("news");
-  for (i = 0; i < x.length; i++) {
-     x[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
+  function openCity(evt, cityName) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("news");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < x.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
-  }
-  $.ajax({
+    }
+    $.ajax({
       type: "GET",
       dataType: "json",
       url: "/detail",
@@ -44,14 +39,13 @@ function openCity(evt, cityName) {
         document.getElementById(cityName).getElementsByClassName('htwo')[0].textContent=data.h2;
         document.getElementById(cityName).getElementsByClassName('content')[0].textContent=data.content;
         $('#id01').css("display", "none");
-
       },
       error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
         alert(thrownError);
       }
-  });
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " w3-red";
-}
+    });
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " w3-red";
+  }
 </script>

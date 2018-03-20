@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, jsonify, Response, request
 from gzt.parser import YeniAkit, Sozcu, Alert
 from gzt.config import Settings
@@ -12,7 +11,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def root():
-    return render_template("index.html", update_interval = int(Settings().readSetting('main','update_interval')))
+    return render_template("index.html", update_interval = int(Settings().readSetting('main','update_interval')), default_view = str(Settings().readSetting('main','default_view')))
 
 @app.route('/main')
 def main():
@@ -41,6 +40,7 @@ def toggle():
 @app.route('/content', methods=['GET'])
 def content():
     gazete = request.args.get('gazete', type=str)
+    type = request.args.get('type', type=str)
     name = ""
     thelist = ""
     if gazete == "akit":
@@ -49,7 +49,10 @@ def content():
     if gazete == "Sözcü":
             thelist = Sozcu().parseNewsList()
             name = "Sözcü"
-    return render_template("content.html", list = thelist, name = name)
+    if type == "grid":
+        return render_template("gallery.html", list = thelist, name = name)
+    else:
+        return render_template("content.html", list = thelist, name = name)
 
 @app.route('/refresh')
 def refresh():
@@ -84,6 +87,6 @@ t = threading.Thread(target=start_server)
 t.daemon = True
 t.start()
 
-webview.create_window("Gazete", "http://127.0.0.1:5000/")
+webview.create_window("Gazete", "http://127.0.0.1:5000/", min_size=(1280, 768))
 
 sys.exit()
