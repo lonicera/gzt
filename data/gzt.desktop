@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name[tr]=Gazete
+Categories=Utility;
+X-GNOME-FullName[tr]=Gazete
+Comment[tr]=
+Icon=internet-news-reader
+NoDisplay=false
+Exec=gzt
+Path=
+Terminal=false
+X-GNOME-UsesNotifications=true
