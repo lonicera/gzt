@@ -9,11 +9,11 @@ setup(
     name='Gzt',
     version='1.0',
     long_description=__doc__,
-    packages=['gzt'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['Flask'],
     entry_points = {
             'console_scripts': ['gzt=gzt.main'],
         },
+    install_requires=['Flask', 'pywebview', 'bs4'],
+    packages=find_packages(),
 )

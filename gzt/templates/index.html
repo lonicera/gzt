@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Gazete</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/static/css/w3.css">
@@ -12,12 +12,69 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
   <style>
     body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 24px;
+    }
+
+    .switch input {display:none;}
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(36px);
+      -ms-transform: translateX(36px);
+      transform: translateX(36px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
   </style>
   <script>
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     var default_view = "{{ default_view }}";
-    var yakit;
-    var sozcu;
+    var update_interval = {{ update_interval }}
+    {% for i in newspaper_list%}
+    var {{i[0]}};
+    {% endfor %}
     function checkNews () {
       $.ajax({
         type: "GET",
@@ -25,19 +82,18 @@
         url: "/refresh",
         data: {},
         beforeSend: function() {
-          $('#sozcu').html("Sözcü");
-          $('#yeniakit').html("Yeni Akit");
+          {% for i in newspaper_list%}
+          $('#{{i[0]}}').html("{{i[1]}}");
+          {% endfor %}
           $('#id01').css("display", "block");
         },
         success: function(data) {
-          yakit = data.yeniakit;
-          sozcu = data.sozcu;
-          if (data.sozcu > 0) {
-            $('#sozcu').html("Sözcü <span class='w3-badge w3-red w3-tiny'>" + data.sozcu + "&nbsp;</span>");
+          {% for i in newspaper_list %}
+          {{i[0]}} = data.{{i[0]}};
+          if (data.{{i[0]}} > 0) {
+            $('#{{i[0]}}').html("{{i[1]}} <span class='w3-badge w3-red w3-tiny'>" + data.{{i[0]}} + "&nbsp;</span>");
           }
-          if (data.yeniakit > 0) {
-            $('#yeniakit').html("Yeni Akit <span class='w3-badge w3-red w3-tiny'>" + data.yeniakit + "&nbsp;</span>");
-          }
+          {% endfor %}
           $('#id01').css("display", "none");
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -48,18 +104,81 @@
     }
     $(document).ready(function(){
       var newspaper = "";
-      if (default_view == "grid") {
-        $('#default_view').removeClass("fa-th");
-        $('#default_view').addClass("fa-bars");
-      } else {
-        $('#default_view').removeClass("fa-bars");
-        $('#default_view').addClass("fa-th");
+      $("#update_interval").focusout(function(){
+        saveSettings('main', 'update_interval', $("#update_interval").val()*1000*60);
+      });
+      $('#paperlist').on('blur', function(){
+        var selected=[];
+        $(this).find('option:selected').each(function(i,e){
+          selected.push(e.value);
+        });
+        //alert('You selected: ' +selected.join(','));
+        saveSettings('newspapers', 'list', selected.join(','));
+        $.ajax({
+          type: "GET",
+          dataType: "json",
+          url: "/reload",
+          data: {},
+          beforeSend: function() {
+          },
+          success: function(data) {
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+          }
+        });
+      });
+      function saveSettings(section, key, value) {
+        $.ajax({
+          type: "GET",
+          dataType: "json",
+          url: "/saveSettings",
+          data: {'section': section, 'key': key, 'value': value},
+          beforeSend: function() {
+            $('#rightMenu').addClass('w3-opacity-max');
+          },
+          success: function(data) {
+            $('#rightMenu').removeClass('w3-opacity-max');
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+          }
+        });
       }
+      function loadNewspaper (default_view, newspaper) {
+        $('#id01').css("display", "block");
+        $('#loader').load("/content?type=" + default_view  + "&gazete=" + newspaper, function() {
+          $('#loader').addClass('w3-container');
+          $('#id01').css("display", "none");
+        });
+      }
+      function updateViewIcon () {
+        if (default_view == "grid") {
+          $('#default_view').removeClass("fa-th");
+          $('#default_view').addClass("fa-bars");
+        } else {
+          $('#default_view').removeClass("fa-bars");
+          $('#default_view').addClass("fa-th");
+        }
+      }
+      updateViewIcon ();
       $('#loader').load("/main");
       checkNews();
-      setInterval(function(){ checkNews(); }, {{update_interval}});
+      setInterval(function(){ checkNews(); }, update_interval);
+      $('#grid_select').click(function(){
+        if($("#grid_select").is(':checked')) {
+          default_view = "grid";
+        } else {
+          default_view = "list";
+        }
+        if (newspaper != "") {
+          loadNewspaper(default_view, newspaper);
+        }
+        updateViewIcon ();
+        saveSettings('main', 'default_view', default_view);
+      });
       $('.w3-bar-item').click(function(){
         if ($(this).attr('id') == "main") {
+          newspaper = '';
+          $('.newspaper').removeClass('w3-red');
           $('#loader').removeClass('w3-container');
           $('#loader').css("margin-top", "0px");
           $('#id01').css("display", "block");
@@ -86,57 +205,71 @@
           $( this).toggleClass( "w3-red" );
           if (default_view == "list") {
             default_view = "grid";
+            $('#grid_select').prop('checked', true);
             $('#default_view').removeClass("fa-th");
             $('#default_view').addClass("fa-bars");
           } else {
             default_view = "list";
+            $('#grid_select').prop('checked', false);
             $('#default_view').removeClass("fa-bars");
             $('#default_view').addClass("fa-th");
           }
-          $('#id01').css("display", "block");
-          $('#loader').load("/content?type=" + default_view  + "&gazete="+newspaper, function() {
-            $('#loader').addClass('w3-container');
-            $('#loader').css("margin-top", "50px");
-            $('#id01').css("display", "none");
-          });
+          loadNewspaper(default_view, newspaper);
         }
-        if ($(this).attr('id') == "sozcu") {
-          newspaper = "Sözcü";
+        {% for i in newspaper_list %}
+        if ($(this).attr('id') == "{{i[0]}}") {
+          newspaper = "{{i[0]}}";
           $('.newspaper').removeClass('w3-red');
           $(this).addClass('w3-red');
-          $('#id01').css("display", "block");
-          $('#loader').load("/content?type=" + default_view + "&gazete=Sözcü", function() {
-            $('#loader').addClass('w3-container');
-            $('#loader').css("margin-top", "50px");
-            $('#id01').css("display", "none");
-          });
-          if (sozcu > 0) {
-            $('#sozcu').html("Sözcü");
+          loadNewspaper(default_view, newspaper);
+          if ({{i[0]}} > 0) {
+            $('#{{i[0]}}').html("{{i[1]}}");
           }
         }
-        if ($(this).attr('id') == "yeniakit") {
-          newspaper = "akit";
-          $('.newspaper').removeClass('w3-red');
-          $(this).addClass('w3-red');          
-          $('#id01').css("display", "block");
-          $('#loader').load("/content?type=" + default_view + "&gazete=akit", function() {
-            $('#loader').addClass('w3-container');
-            $('#loader').css("margin-top", "50px");
-            $('#id01').css("display", "none");
-          });
-          if (yakit > 0) {
-            $('#yeniakit').html("Yeni Akit");
-          }
-        }
+        {% endfor %}
       });
     });
+    function openRightMenu() {
+      document.getElementById("rightMenu").style.display = "block";
+      document.getElementById("myOverlay").style.display = "block";
+    }
+    function closeRightMenu() {
+      document.getElementById("rightMenu").style.display = "none";
+      document.getElementById("myOverlay").style.display = "none";
+    }
   </script>
 </head>
 <body>
+  <div class="w3-overlay w3-animate-opacity" onclick="closeRightMenu()" style="cursor:pointer;" id="myOverlay"></div>
+  <div class="w3-sidebar w3-bar-block w3-card-4 w3-animate-right" style="display:none;right:0; z-index:5" id="rightMenu">
+    <button onclick="closeRightMenu()" class="w3-bar-item w3-button w3-large w3-border-bottom"><i class="fas fa-times-circle"></i></button>
+    <div class="w3-border-bottom w3-container w3w3-padding-8">
+      <label class="w3-cell w3-padding-8">Izgara Görünümü:</label>
+      <label class="switch">
+        <input id="grid_select" type="checkbox" {%if default_view == 'grid'%} checked {% endif %}>
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="w3-border-bottom w3-container w3-padding-8">
+      <label class="w3-cell w3-padding-8">Güncelleme Sıklığı (dk):</label>
+      <input id="update_interval" class="w3-input" placeholder="{{(update_interval|int / 1000 / 60)|round|int}}">
+    </div>
+    <div class="w3-border-bottom w3-container w3-padding-8">
+      <select id="paperlist" class="w3-select" name="paperlist" multiple style="height:200px;">
+       <option value="" disabled>Gazeteler</option>
+       {% for i in all_papers %}
+       <option value="{{i}}">{{i}}</option>
+       {% endfor %}
+     </select>
+    </div>
+  </div>
+
   <div id="main_menu" class="w3-bar w3-theme-l1 w3-card-2 w3-top">
     <button id="main" class="w3-bar-item w3-button w3-theme-d4" >Ana Sayfa</button>
-    <button id="sozcu" class="w3-bar-item w3-button newspaper">Sözcü</button>
-    <button id="yeniakit" class="w3-bar-item w3-button newspaper" >Yeni Akit</button>
+    {% for i in newspaper_list %}
+    <button id="{{i[0]}}" class="w3-bar-item w3-button newspaper">{{i[1]}}</button>
+    {% endfor %}
+    <button class="w3-button w3-right" onclick="openRightMenu()"><i class="fas fa-cog"></i></button>
     <button id="toggle" class="w3-bar-item w3-button w3-right" ><i class="fa fa-expand-arrows-alt"></i></button>
     <button id="view" class="w3-bar-item w3-button w3-right" ><i id="default_view" class="fa fa-th"></i></button>
   </div>

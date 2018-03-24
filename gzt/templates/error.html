@@ -1,0 +1,34 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/css/w3.css">
+<link rel="stylesheet" href="/static/css/w3-theme-blue-grey.css">
+<script src="/static/js/jquery-1.10.2.js"></script>
+<script>
+function reloadPage() {
+  $.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/reload",
+    data: {},
+    beforeSend: function() {
+    },
+    success: function(data) {
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+    }
+  });
+}
+  $(document).ready(function(){
+    setInterval(function(){ reloadPage(); }, 60000);
+  });
+</script>
+<body class=" w3-light-grey">
+<div class="w3-container w3-animate-opacity" {{extraStyle}}>
+  <div class="w3-panel w3-red w3-display-container w3-round w3-card-2 " >
+    <span onclick="this.parentElement.style.display='none'"
+    class="w3-button w3-red w3-large w3-display-topright">&times;</span>
+    <h1>{{caption}}</h1>
+    <p>{{content}}</p>
+  </div>
+</div>
+</body>

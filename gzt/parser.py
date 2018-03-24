@@ -10,13 +10,9 @@ def getPage(url):
     source = BeautifulSoup(page.data, "html.parser")
     return source
 
-class Alert:
-    def __init__(self):
-        self.keywords = ['raspberry', 'linux', 'afrin', 'ABD']
-
 class YeniAkit:
     def __init__(self):
-        self.name = 'YeniAkit'
+        self.name = 'Yeni Akit'
         self.adress = 'http://www.yeniakit.com.tr'
         self.newsListContainer = 'indicators'
 
@@ -68,17 +64,33 @@ class Sozcu:
             text = text + " " + i.text
         return data.find('h1').text, data.find('h2').text, text
 
-class Milliyet:
+class Hurriyet:
     def __init__(self):
-        self.adress = 'http://www.milliyet.com.tr'
-        self.container = 'carousel11'
+        self.name = 'Hürriyet'
+        self.adress = 'http://www.hurriyet.com.tr/'
+        self.container = 'swiper-wrapper'
 
     def parseNewsList(self):
         data = getPage(self.adress)
-        for i in data.find('div', {'id': self.container }).find_all('a'):
-            print(i.get('href'))
+        newslistdata = data.find_all('div', {'class': self.container})
+        newslist = []
+        for i in newslistdata[1]:
+            news_id = i.find('a').get('data-news-id')
+            news_link = i.find('a').get('href')
+            y = []
+            if news_id != "-1" and not "galeri" in news_link and not "yazarlar" in news_link:
+                news_picture = i.find('img').get('src')
+                news_title = i.find('img').get('alt')
+                y.append([news_title, news_link, news_picture, news_id])
+            newslist.extend(y)
+        return newslist
 
-
-
-#print(YeniakIT().parseNewsContent('http://www.yeniakit.com.tr/haber/almanyadan-turkiyeye-kustah-afrin-cagrisi-429537.html'))
-#print(Sozcu().parseNewsList())
+    def parseNewsContent(self, url):
+        data = getPage(self.adress + url)
+        data.find('h1').text
+        data.find('h2').text
+        thenews = data.find_all('div', {'class': 'news-box'})
+        text = ""
+        for i in thenews[2].find_all('p'):
+            text = text + " " + i.text
+        return data.find('h1').text, data.find('h2').text, text

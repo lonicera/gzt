@@ -1,12 +1,12 @@
 
-<div id="newslist" class="w3-sidebar w3-bar-block w3-light-grey w3-card-2" style="width:430px">
+<div id="newslist" class="w3-sidebar w3-bar-block w3-light-grey w3-card-2" style="width:430px; margin-top: 50px;">
   <h5 class="w3-bar-item w3-border-bottom">{{name}} Gazetesi</h5>
   {% for i in list%}
-  <button id="{{i[3]}}" class="w3-bar-item w3-button tablink" onclick="openCity(event, '{{i[1]}}')">{{i[0]}}</button>
+  <button id="{{i[3]}}" class="w3-bar-item w3-button tablink" onclick="openContent(event, '{{i[1]}}')">{{i[0]}}</button>
   {% endfor %}
 </div>
 
-<div style="margin-left:430px">
+<div style="margin-left:430px; margin-top: 50px;">
   {% for i in list%}
   <div id="{{i[1]}}" class="w3-container news w3-animate-opacity" style="display:none">
     <div class="w3-panel w3-leftbar w3-theme-l4 w3-xxlarge w3-serif w3-padding-8">{{i[0]}}</div>
@@ -17,7 +17,7 @@
   {% endfor %}
 </div>
 <script>
-  function openCity(evt, cityName) {
+  function openContent(evt, contentName) {
     var i, x, tablinks;
     x = document.getElementsByClassName("news");
     for (i = 0; i < x.length; i++) {
@@ -31,13 +31,13 @@
       type: "GET",
       dataType: "json",
       url: "/detail",
-      data: {'gazete': '{{name}}', 'link': cityName},
+      data: {'gazete': '{{gazete}}', 'link': contentName},
       beforeSend: function() {
         $('#id01').css("display", "block");
       },
       success: function(data) {
-        document.getElementById(cityName).getElementsByClassName('htwo')[0].textContent=data.h2;
-        document.getElementById(cityName).getElementsByClassName('content')[0].textContent=data.content;
+        document.getElementById(contentName).getElementsByClassName('htwo')[0].textContent=data.h2;
+        document.getElementById(contentName).getElementsByClassName('content')[0].textContent=data.content;
         $('#id01').css("display", "none");
       },
       error: function (xhr, ajaxOptions, thrownError) {
@@ -45,7 +45,7 @@
         alert(thrownError);
       }
     });
-    document.getElementById(cityName).style.display = "block";
+    document.getElementById(contentName).style.display = "block";
     evt.currentTarget.className += " w3-red";
   }
 </script>
