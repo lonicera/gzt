@@ -1,61 +1,8 @@
-<div class="w3-display-container w3-animate-opacity w3-card-2">
-  <img class="" src="/static/img/main.jpeg" alt="Main" style="width:100%;min-height:350px;max-height:600px;">
-  <div class="w3-container w3-display-bottomleft w3-margin-bottom">
-    <button class="w3-button w3-xlarge w3-theme w3-hover-teal" onclick="document.getElementById('about').style.display='block'" title="GZT">GZT</button>
-  </div>
+<div class="w3-display-container w3-animate-opacity">
+  <img class="" src="/static/img/main.jpeg" alt="Main" style="width:100%;min-height:350px;max-height:576px;">
+  <div class="w3-display-bottomleft w3-container w3-amber w3-hover-orange w3-hide-small"
+   style="bottom:10%;opacity:0.7;width:80%">
+  <h4><b>Gzt, basit bir haber okuma uygulamasıdır.<br>Gereksiz içerik ve reklam olmaksızın haber okumak için hazırlanmış, özgür bir yazılımdır</b></h4>
+  <h5>Yazar: Şenol Alan - <span class="w3-tag">palynology@gmail.com</span></h5>
 </div>
-<!-- Accordion -->
-<div class="w3-card w3-round">
-  <div class="w3-white">
-    <button onclick="myFunction('menu1')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i>Reserved</button>
-    <div id="menu1" class="w3-hide w3-container"></div>
-    <button onclick="myFunction('menu2')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i>Reserved</button>
-    <div id="menu2" class="w3-hide w3-container"></div>
-    <button onclick="myFunction('menu3')" class="w3-button w3-block w3-theme-l5 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i>Reserved</button>
-    <div id="menu3" class="w3-hide w3-container">
-      <div class="w3-row-padding"></div>
-    </div>
-  </div>
 </div>
-<br>
-
-<!-- Modal -->
-<div id="about" class="w3-modal">
-  <div class="w3-modal-content w3-card-4 w3-animate-top">
-    <header class="w3-container w3-theme-l2 w3-display-container">
-      <span onclick="document.getElementById('about').style.display='none'" class="w3-button w3-theme-l2  w3-display-topright"><i class="fas fa-times-circle"></i></span>
-      <h4>Gzt, basit bir haber okuma uygulaması</h4>
-    </header>
-    <div class="w3-container">
-      <p>Yazar: Şenol Alan - palynology@gmail.com</p>
-      <p>Bu uygulama özgür bir yazılımdır...</p>
-    </div>
-    <footer class="w3-container w3-theme-l2 ">
-      <p>2018</p>
-    </footer>
-  </div>
-</div>
-<script>
-  // Accordion
-  function myFunction(id) {
-    var x = document.getElementById(id);
-      if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        x.previousElementSibling.className += " w3-theme-d1";
-      } else {
-        x.className = x.className.replace("w3-show", "");
-        x.previousElementSibling.className =
-        x.previousElementSibling.className.replace(" w3-theme-d1", "");
-      }
-    }
-
-    // Used to toggle the menu on smaller screens when clicking on the menu button
-    function openNav() {
-      var x = document.getElementById("navDemo");
-      if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-      } else {
-        x.className = x.className.replace(" w3-show", "");
-      }
-    }
-</script>
