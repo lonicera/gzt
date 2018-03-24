@@ -61,7 +61,7 @@ class Sozcu:
         thenews = data.find('div', {'class': 'content-element'}).find_all('p')
         text = ""
         for i in thenews:
-            text = text + " " + i.text
+            text = text + " " + i.text + " "
         return data.find('h1').text, data.find('h2').text, text
 
 class Hurriyet:
@@ -78,7 +78,7 @@ class Hurriyet:
             news_id = i.find('a').get('data-news-id')
             news_link = i.find('a').get('href')
             y = []
-            if news_id != "-1" and not "galeri" in news_link and not "yazarlar" in news_link:
+            if news_id != "-1" and not "galeri" in news_link and not "yazarlar" in news_link and not "magazin" in news_link and not "dunya" in news_link and not "ekonomi" in news_link:
                 news_picture = i.find('img').get('src')
                 news_title = i.find('img').get('alt')
                 y.append([news_title, news_link, news_picture, news_id])
@@ -92,5 +92,5 @@ class Hurriyet:
         thenews = data.find_all('div', {'class': 'news-box'})
         text = ""
         for i in thenews[2].find_all('p'):
-            text = text + " " + i.text
+            text = text + " " + i.text + " "
         return data.find('h1').text, data.find('h2').text, text
