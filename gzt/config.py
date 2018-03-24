@@ -6,7 +6,8 @@ import configparser, os
 class Settings(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.configFile = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+        self.configFile = os.path.dirname(os.path.realpath(__file__)) + '/settings.cfg'
+        print(self.configFile)
 
     def write_file(self):
         with open(self.configFile, 'w') as configfile:
