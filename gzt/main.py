@@ -85,6 +85,8 @@ def content():
     try:
         name = ""
         thelist = ""
+        if not gazete:
+            gazete = thelist = str(Settings().readSetting('newspapers','list')).split(',')[0]
         thelist = eval(gazete+'()').parseNewsList()
         name = eval(gazete+'()').name
         if type == "grid":
