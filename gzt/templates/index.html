@@ -99,7 +99,8 @@
         error: function (xhr, ajaxOptions, thrownError) {
           //alert(xhr.status);
           //alert(thrownError);
-        }
+        },
+        timeout: 3000
       });
     }
     $(document).ready(function(){
@@ -124,7 +125,8 @@
           success: function(data) {
           },
           error: function (xhr, ajaxOptions, thrownError) {
-          }
+          },
+          timeout: 3000
         });
       });
       function saveSettings(section, key, value) {
@@ -140,7 +142,8 @@
             $('#rightMenu').removeClass('w3-opacity-max');
           },
           error: function (xhr, ajaxOptions, thrownError) {
-          }
+          },
+          timeout: 3000
         });
       }
       function loadNewspaper (default_view, newspaper) {
@@ -198,7 +201,7 @@
             success: function(data) {
             },
             error: function (xhr, ajaxOptions, thrownError) {
-            }
+            },timeout: 3000
           });
         }
         if ($(this).attr('id') == "view") {
