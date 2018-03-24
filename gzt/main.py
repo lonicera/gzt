@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, jsonify, Response, request
-from parser import *
-from config import Settings
+from gzt.parser import *
+from gzt.config import Settings
 import webview, ast
-import sys, json, socket
+import sys, json, socket, os
 import threading
 
 app = Flask(__name__)
 
 def listNewspapers():
-    filename = "parser.py"
+    filename = os.path.dirname(os.path.realpath(__file__)) + "/parser.py"
     with open(filename) as file:
         node = ast.parse(file.read())
     classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
