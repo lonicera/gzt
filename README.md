@@ -7,4 +7,5 @@ GZT is a news parser based on Flask and pywebview. It pulls the news from two di
 * bs4
 
 ## TO-DO
-- [ ] Add more newspaper and columnists section into every newspaper as a dropdown menu
+- [ ] Add more newspaper and columnists section into every newspaper as a dropdown menu.
+- [ ] Add different categories like sport, world etc. for each newspaper as dropdown menu.
