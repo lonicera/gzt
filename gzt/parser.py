@@ -20,7 +20,6 @@ class YeniAkit:
         data = getPage(self.adress)
         newslistOL = data.find('ol',{'class': self.newsListContainer}).find_all('li')
         newslist = []
-        newlist = []
         for i in newslistOL:
             y = []
             if  i.find('a').get('title') is not None:
@@ -36,6 +35,20 @@ class YeniAkit:
         section.h2 = section.find('h2').text
         section.article = section.find('article').text
         return section.h1, section.h2, section.article
+
+    def getColumunists(self):
+        data = getPage(self.adress)
+        thelist = data.find('div', {'class': 'module-default-todayArticles'}).find('ul').find_all('li')
+        clist = []
+        for i in thelist:
+            y = []
+            link = i.find('a').get('href')
+            title = i.find('a').get('title')
+            image = i.find('img').get('src')
+            name = i.find('img').get('alt')
+            y.append([link, title, image, name])
+            clist.extend(y)
+        return clist
 
 class Sozcu:
     def __init__(self):
@@ -54,6 +67,20 @@ class Sozcu:
                 y.append([i.find('a').get('title'), i.find('a').get('href') , i.find('img').get('src'), news_id])
             newslist.extend(y)
         return newslist
+
+    def getColumunists(self):
+        data = getPage(self.adress + '/kategori/yazarlar/')
+        thelist = data.find_all('div', {'class':'clearfix'})[0].find_all('div', {'class': 'news-box'})
+        clist = []
+        for i in thelist:
+            y = []
+            link = i.find('a').get('href')
+            title = i.find('div', {'class':'c-text'}).text
+            image = i.find('span', {'class':'news-img'})['style'].split('(')[1].split(')')[0]
+            name = i.find('div', {'class':'columnist-name'}).text
+            y.append([link, title, image, name])
+            clist.extend(y)
+        return clist
 
     def parseNewsContent(self, url):
         data = getPage(url)
@@ -92,5 +119,52 @@ class Hurriyet:
         thenews = data.find_all('div', {'class': 'news-box'})
         text = ""
         for i in thenews[2].find_all('p'):
+            text = text + " " + i.text + " "
+        return data.find('h1').text, data.find('h2').text, text
+
+    def getColumunists(self):
+        data = getPage(self.adress + '/yazarlar/')
+        thelist = data.find('div', {'data-list-type' : 'author'}).find_all('a', {'class' : 'author-box'})
+        clist = []
+        for i in thelist:
+            y = []
+            link = i.get('href')
+            title = i.get('title')
+            image = i.find('img').get('src')
+            name = i.find('span', {'class' : 'name'}).text
+            y.append([link, title, image, name])
+            clist.extend(y)
+        return clist
+
+class Haberler:
+    def __init__(self):
+        self.name = 'Haberler.com'
+        self.adress = 'http://www.haberler.com/'
+        self.container = 'haberler-news'
+
+    def parseNewsList(self):
+        data = getPage(self.adress)
+        thelist = data.find_all('ul', {'class' : self.container})
+        newslist = []
+        for i in thelist:
+            y = []
+            news_id = i.find('a').get('href').split('-')[-2:-1]
+            try:
+                if news_id[0].isdigit() and int(news_id[0]) > 100 :
+                    news_link = i.find('a').get('href')
+                    news_picture = i.find('img', {'class' : 'lazy'}).get('data-original')
+                    news_title = i.find('a').get('title')
+                    print(news_title)
+                    y.append([news_title, news_link, news_picture, news_id])
+                newslist.extend(y)
+            except:
+                pass
+        return newslist
+
+    def parseNewsContent(self, url):
+        data = getPage(url)
+        thenews = data.find('div', {'class': 'haber_metni'})
+        text = ""
+        for i in thenews.find_all('p'):
             text = text + " " + i.text + " "
         return data.find('h1').text, data.find('h2').text, text
