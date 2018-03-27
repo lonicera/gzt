@@ -14,6 +14,6 @@ setup(
     entry_points = {
             'console_scripts': ['gzt=gzt.main'],
         },
-    install_requires=['Flask', 'pywebview', 'bs4'],
+    install_requires=['Flask', 'pywebview', 'bs4', 'urllib3'],
     packages=find_packages(),
 )
